@@ -1,0 +1,123 @@
+# GoReleaser configuration
+# Documentation: https://goreleaser.com
+
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./...
+
+builds:
+  - id: convert
+    main: ./cmd/convert
+    binary: convert
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    # Windows ARM64 is experimental, skip for now
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+    flags:
+      - -trimpath
+
+archives:
+  - id: default
+    format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^ci:'
+      - '^chore:'
+      - Merge pull request
+      - Merge branch
+  groups:
+    - title: 'New Features'
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: 'Bug Fixes'
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: 'Performance Improvements'
+      regexp: '^.*?perf(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: 'Refactors'
+      regexp: '^.*?refactor(\([[:word:]]+\))??!?:.+$'
+      order: 3
+    - title: 'Other Changes'
+      order: 999
+
+release:
+  github:
+    owner: gh-inner
+    name: go-tifpdf2png
+  name_template: "{{.ProjectName}} {{.Version}}"
+  draft: false
+  prerelease: auto
+  mode: replace
+  header: |
+    ## TIFF/PDF to PNG Converter Release {{.Version}}
+    
+    This release includes pre-built binaries for:
+    - **macOS** (Intel and Apple Silicon)
+    - **Linux** (x86_64 and ARM64)
+    - **Windows** (x86_64)
+    
+    ### Installation
+    
+    Download the appropriate archive for your platform from the assets below, extract it, and place the `convert` binary in your PATH.
+    
+    Alternatively, install via Go:
+    ```bash
+    go install github.com/gh-inner/go-tifpdf2png/cmd/convert@{{.Tag}}
+    ```
+  footer: |
+    ---
+    **Full Changelog**: https://github.com/gh-inner/go-tifpdf2png/compare/{{.PreviousTag}}...{{.Tag}}
+
+# Generate Software Bill of Materials
+sboms:
+  - artifacts: archive
+
+# Announce releases (optional - requires additional configuration)
+# announce:
+#   slack:
+#     enabled: false

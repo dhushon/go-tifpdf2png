@@ -10,13 +10,28 @@ import (
 	"github.com/gh-inner/go-tifpdf2png"
 )
 
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
+
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s <input-file>\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "       %s --version\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "\nConverts a TIFF or PDF file to PNG images in the current working directory\n")
 		fmt.Fprintf(os.Stderr, "and outputs ImageDetails to stdout as JSON.\n")
 		fmt.Fprintf(os.Stderr, "\nSupported formats: .tif, .tiff, .pdf\n")
 		os.Exit(1)
+	}
+
+	// Handle version flag
+	if os.Args[1] == "--version" || os.Args[1] == "-v" {
+		fmt.Printf("go-tifpdf2png convert %s\n", version)
+		fmt.Printf("  commit: %s\n", commit)
+		fmt.Printf("  built:  %s\n", date)
+		os.Exit(0)
 	}
 
 	inputFile := os.Args[1]
