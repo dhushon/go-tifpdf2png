@@ -21,9 +21,11 @@ builds:
     goarch:
       - amd64
       - arm64
-    # Windows ARM64 is experimental, skip for now
+    # Skip unsupported combinations
     ignore:
       - goos: windows
+        goarch: arm64
+      - goos: linux
         goarch: arm64
     ldflags:
       - -s -w
@@ -97,9 +99,9 @@ release:
     ## TIFF/PDF to PNG Converter Release {{.Version}}
     
     This release includes pre-built binaries for:
-    - **macOS** (Intel and Apple Silicon)
-    - **Linux** (x86_64 and ARM64)
-    - **Windows** (x86_64)
+    - **macOS** (Intel amd64 and Apple Silicon arm64)
+    - **Linux** (x86_64 amd64)
+    - **Windows** (x86_64 amd64)
     
     ### Installation
     
