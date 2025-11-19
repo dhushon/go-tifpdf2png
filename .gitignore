@@ -33,11 +33,12 @@ Thumbs.db
 /bin/
 /cmd/convert/convert
 
-# Test files
+# Test files - excluded since they're downloaded dynamically by tests
 *.tif
 *.tiff
 *.pdf
 *.png
-!testdata/*.png
-!testdata/*.tif
-!testdata/*.pdf
+
+# Keep testdata directory structure but not the files
+!testdata/
+!testdata/README.md
