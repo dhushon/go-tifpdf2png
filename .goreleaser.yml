@@ -14,9 +14,9 @@ builds:
     binary: convert
     env:
       - CGO_ENABLED=1
+      - CC=zig cc -target x86_64-linux-gnu
     goos:
       - linux
-      - windows
     goarch:
       - amd64
     ldflags:
@@ -26,9 +26,46 @@ builds:
       - -X main.date={{.Date}}
     flags:
       - -trimpath
-    hooks:
-      pre:
-        - cmd: echo "Building for {{ .Os }}/{{ .Arch }}"
+  
+  - id: convert-windows
+    main: ./cmd/convert
+    binary: convert
+    env:
+      - CGO_ENABLED=1
+      - CC=zig cc -target x86_64-windows-gnu
+      - CXX=zig c++ -target x86_64-windows-gnu
+    goos:
+      - windows
+    goarch:
+      - amd64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+      - -buildmode=exe
+    flags:
+      - -trimpath
+      - -buildmode=exe
+
+  - id: convert-darwin-arm64
+    main: ./cmd/convert
+    binary: convert
+    env:
+      - CGO_ENABLED=1
+      - CC=zig cc -target aarch64-macos
+      - CXX=zig c++ -target aarch64-macos
+    goos:
+      - darwin
+    goarch:
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+    flags:
+      - -trimpath
 
 archives:
   - id: default
@@ -96,15 +133,13 @@ release:
     This release includes pre-built binaries for:
     - **Linux** (x86_64 amd64)
     - **Windows** (x86_64 amd64)
-    
-    **Note:** macOS users can install via Go:
-    ```bash
-    go install github.com/gh-inner/go-tifpdf2png/cmd/convert@{{.Tag}}
-    ```
+    - **macOS** (Apple Silicon ARM64)
     
     ### Installation
     
     Download the appropriate archive for your platform from the assets below, extract it, and place the `convert` binary in your PATH.
+    
+    **Note:** Binaries are cross-compiled using Zig with CGO support for full PDF functionality.
   footer: |
     ---
     **Full Changelog**: https://github.com/gh-inner/go-tifpdf2png/compare/{{.PreviousTag}}...{{.Tag}}
