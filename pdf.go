@@ -1,3 +1,4 @@
+// Package tifpdf2png provides utilities for converting TIFF and PDF files to PNG images.
 package tifpdf2png
 
 import (
@@ -11,8 +12,6 @@ import (
 	"github.com/gen2brain/go-fitz"
 )
 
-const fixedDPI = 150.0
-
 // ConvertPdfToPngWithImageDetails converts PDF to PNG and returns ImageDetail slice
 func ConvertPdfToPngWithImageDetails(pdfFilename string, destpath string, prefix string) ([]*ImageDetail, error) {
 	doc, err := fitz.New(pdfFilename)
@@ -20,7 +19,11 @@ func ConvertPdfToPngWithImageDetails(pdfFilename string, destpath string, prefix
 		slog.Error("ConvertPdfToPngWithImageDetails: load PDF file", "error", err)
 		return nil, err
 	}
-	defer doc.Close()
+	defer func() {
+		if err := doc.Close(); err != nil {
+			slog.Warn("Failed to close PDF document", "error", err)
+		}
+	}()
 
 	pageCount := doc.NumPage()
 	if pageCount == 0 {

@@ -1,6 +1,7 @@
 # Test Files Summary
 
 ## Overview
+
 Created comprehensive test suite for `go-tifpdf2png` with automatic test file downloading from public sources.
 
 ## Test Files
@@ -8,13 +9,13 @@ Created comprehensive test suite for `go-tifpdf2png` with automatic test file do
 ### Downloaded Automatically (on first test run)
 
 1. **UTM2GTIF.TIF** (TIFF)
-   - Source: https://download.osgeo.org/geotiff/samples/spot/chicago/UTM2GTIF.TIF
+   - Source:[https://download.osgeo.org/geotiff/samples/spot/chicago/UTM2GTIF.TIF]
    - Type: GeoTIFF image
    - Size: ~500KB
    - Used for: TIFF conversion testing
 
 2. **dummy.pdf** (PDF)
-   - Source: https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
+   - Source: [https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf]
    - Type: Simple PDF document
    - Pages: 1
    - Used for: PDF conversion testing
@@ -75,6 +76,7 @@ go clean -testcache && go test -v
 ## Test Results
 
 All tests passing ✓
+
 - TIFF conversion: Working
 - PDF conversion: Working
 - Cropping detection: Working

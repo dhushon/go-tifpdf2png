@@ -1,3 +1,4 @@
+// Package main provides a CLI tool for converting TIFF and PDF files to PNG images.
 package main
 
 import (

@@ -163,7 +163,11 @@ func saveImageAsPng(img image.Image, filename string) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			slog.Warn("Failed to close PNG file", "error", err)
+		}
+	}()
 
 	return png.Encode(file, img)
 }

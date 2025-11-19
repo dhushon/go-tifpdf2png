@@ -18,7 +18,11 @@ func ConvertTiffToPngWithImageDetails(tiffFilename string, destpath string, pref
 		slog.Error("ConvertTiffToPngWithImageDetails: load file", "error", err)
 		return nil, err
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			slog.Warn("Failed to close TIFF file", "error", err)
+		}
+	}()
 
 	frames, _, err := tiff.DecodeAll(file)
 	if err != nil {
