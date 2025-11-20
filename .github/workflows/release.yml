@@ -69,6 +69,13 @@ jobs:
         with:
           version: 0.13.0
 
+      - name: Install syft for SBOM generation
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Verify syft installation
+        run: syft --version
+
       - name: Clean dist directory
         if: ${{ github.event.inputs.clean_dist == 'true' }}
         run: |
