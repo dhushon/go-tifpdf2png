@@ -1,10 +1,16 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
-
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.2.3)'
+        required: true
+        default: '1.0.0'
+      release_description:
+        description: 'Release description'
+        required: false
+        type: string
 jobs:
   release:
     runs-on: ubuntu-latest
