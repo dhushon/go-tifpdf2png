@@ -1,109 +1,32 @@
-name: Release
-
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release version (e.g., v1.0.0, v1.2.3)'
-        required: true
-        type: string
-      release_notes:
-        description: 'Release notes'
-        required: false
-        type: string
-
-permissions:
-  contents: write
+  push:
+    tags:
+      - 'v*.*.*'
 
 jobs:
-  validate:
-    name: Validate Version
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.validate.outputs.version }}
-    
-    steps:
-    - name: Validate semantic version
-      id: validate
-      run: |
-        VERSION="${{ github.event.inputs.version }}"
-        # Remove 'v' prefix if present
-        VERSION="${VERSION#v}"
-        # Add 'v' prefix back
-        VERSION="v${VERSION}"
-        
-        # Validate semantic version format
-        if ! echo "$VERSION" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?$'; then
-          echo "Error: Invalid semantic version format: $VERSION"
-          echo "Expected format: vMAJOR.MINOR.PATCH (e.g., v1.0.0, v1.2.3-beta.1)"
-          exit 1
-        fi
-        
-        echo "version=${VERSION}" >> $GITHUB_OUTPUT
-        echo "Valid version: ${VERSION}"
-
-  test:
-    name: Run Tests
-    needs: validate
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.23'
-
-    - name: Run tests
-      run: go test -v ./...
-
-    - name: Build
-      run: go build -v ./...
-
   release:
-    name: Create Release
-    needs: [validate, test]
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.23'
-    
-    - name: Install Zig for cross-compilation
-      uses: goto-bus-stop/setup-zig@v2
-      with:
-        version: 0.13.0
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.20"
 
-    - name: Check if tag exists
-      run: |
-        VERSION="${{ needs.validate.outputs.version }}"
-        if git rev-parse "$VERSION" >/dev/null 2>&1; then
-          echo "Error: Tag $VERSION already exists"
-          exit 1
-        fi
+      - name: Install syft (for SBOM generation)
+        # Using the official install script to place syft in /usr/local/bin
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 
-    - name: Create and push tag
-      run: |
-        VERSION="${{ needs.validate.outputs.version }}"
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git tag -a "$VERSION" -m "Release $VERSION"
-        git push origin "$VERSION"
+      - name: Verify syft
+        run: |
+          syft --version
 
-    - name: Run GoReleaser
-      uses: goreleaser/goreleaser-action@v5
-      with:
-        version: v2
-        args: release --clean
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_NOTES: ${{ github.event.inputs.release_notes }}
+      - name: Run goreleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
