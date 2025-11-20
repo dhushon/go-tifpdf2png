@@ -16,13 +16,13 @@ A Go library and CLI tool for converting TIFF and PDF files to PNG images with i
 ### As a Library
 
 ```bash
-go get github.com/gh-inner/go-tifpdf2png
+go get github.com/dhushon/go-tifpdf2png
 ```
 
 ### As a CLI Tool
 
 ```bash
-go install github.com/gh-inner/go-tifpdf2png/cmd/convert@latest
+go install github.com/dhushon/go-tifpdf2png/cmd/converttifpdf@latest
 ```
 
 ## Usage
@@ -31,16 +31,16 @@ go install github.com/gh-inner/go-tifpdf2png/cmd/convert@latest
 
 ```bash
 # Convert a TIFF file
-convert document.tif
+converttifpdf document.tif
 
 # Convert a PDF file
-convert invoice.pdf
+converttifpdf invoice.pdf
 
 # Capture JSON output
-convert payment.pdf > metadata.json
+converttifpdf payment.pdf > metadata.json
 
 # Save both output and errors
-convert report.tif > metadata.json 2> conversion.log
+converttifpdf report.tif > metadata.json 2> conversion.log
 ```
 
 ### As a Library
@@ -50,7 +50,7 @@ package main
 
 import (
     "fmt"
-    "github.com/gh-inner/go-tifpdf2png"
+    "github.com/dhushon/go-tifpdf2png"
 )
 
 func main() {

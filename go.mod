@@ -1,4 +1,4 @@
-module github.com/gh-inner/go-tifpdf2png
+module github.com/dhushon/go-tifpdf2png
 
 go 1.24.0
 

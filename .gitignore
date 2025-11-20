@@ -31,7 +31,7 @@ Thumbs.db
 
 # Build output
 /bin/
-/cmd/convert/convert
+/cmd/converttifpdf/converttifpdf
 
 # Test files - excluded since they're downloaded dynamically by tests
 *.tif

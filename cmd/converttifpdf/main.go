@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/gh-inner/go-tifpdf2png"
+	"github.com/dhushon/go-tifpdf2png"
 )
 
 var (

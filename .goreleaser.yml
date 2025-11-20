@@ -6,12 +6,11 @@ version: 2
 before:
   hooks:
     - go mod tidy
-    - go test ./...
 
 builds:
-  - id: convert
-    main: ./cmd/convert
-    binary: convert
+  - id: converttifpdf
+    main: ./cmd/converttifpdf
+    binary: converttifpdf
     env:
       - CGO_ENABLED=1
       - CC=zig cc -target x86_64-linux-gnu
@@ -26,10 +25,10 @@ builds:
       - -X main.date={{.Date}}
     flags:
       - -trimpath
-  
-  - id: convert-windows
-    main: ./cmd/convert
-    binary: convert
+
+  - id: converttifpdf-windows
+    main: ./cmd/converttifpdf
+    binary: converttifpdf
     env:
       - CGO_ENABLED=1
       - CC=zig cc -target x86_64-windows-gnu
@@ -43,16 +42,13 @@ builds:
       - -X main.version={{.Version}}
       - -X main.commit={{.Commit}}
       - -X main.date={{.Date}}
-      - -buildmode=exe
     flags:
       - -trimpath
-      - -buildmode=exe
-
-
 
 archives:
   - id: default
-    format: tar.gz
+    formats:
+      - tar.gz
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_
@@ -63,7 +59,8 @@ archives:
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     format_overrides:
       - goos: windows
-        format: zip
+        formats:
+          - zip
     files:
       - LICENSE
       - README.md
@@ -73,7 +70,7 @@ checksum:
   algorithm: sha256
 
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
 
 changelog:
   sort: asc
@@ -104,7 +101,7 @@ changelog:
 
 release:
   github:
-    owner: gh-inner
+    owner: dhushon
     name: go-tifpdf2png
   name_template: "{{.ProjectName}} {{.Version}}"
   draft: false
@@ -114,21 +111,21 @@ release:
     ## TIFF/PDF to PNG Converter Release {{.Version}}
     
     This release includes pre-built binaries for:
-    - **Linux** (x86_64 amd64)
-    - **Windows** (x86_64 amd64)
+    - **Linux** (x86_64 amd64) - with full PDF support via CGO
+    - **Windows** (x86_64 amd64) - with full PDF support via CGO
     
-    **macOS Users:** Due to code signing requirements and CGO complexity, please install via Go:
+    **macOS Users:** Install via Go to compile with CGO for full PDF support:
     ```bash
-    go install github.com/gh-inner/go-tifpdf2png/cmd/convert@{{.Tag}}
+    go install github.com/dhushon/go-tifpdf2png/cmd/converttifpdf@{{.Tag}}
     ```
-    This compiles natively on your Mac with full PDF support.
+    This compiles natively on your Mac with full TIFF and PDF support.
     
     ### Installation
     
-    Download the appropriate archive for your platform from the assets below, extract it, and place the `convert` binary in your PATH.
+    Download the appropriate archive for your platform from the assets below, extract it, and place the `converttifpdf` binary in your PATH.
   footer: |
     ---
-    **Full Changelog**: https://github.com/gh-inner/go-tifpdf2png/compare/{{.PreviousTag}}...{{.Tag}}
+    **Full Changelog**: https://github.com/dhushon/go-tifpdf2png/compare/{{.PreviousTag}}...{{.Tag}}
 
 # Generate Software Bill of Materials
 sboms:
@@ -136,5 +133,4 @@ sboms:
 
 # Announce releases (optional - requires additional configuration)
 # announce:
-#   slack:
-#     enabled: false
+#

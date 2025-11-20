@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-✅ GitHub repository: https://github.com/gh-inner/go-tifpdf2png  
+✅ GitHub repository: https://github.com/dhushon/go-tifpdf2png  
 ✅ GitHub Actions workflows configured  
 ✅ GoReleaser configuration in place  
 ✅ Semantic versioning enabled  
@@ -12,7 +12,7 @@
 ### Step 1: Verify Tests Pass
 
 Check that all tests are passing on the main branch:
-- Go to: https://github.com/gh-inner/go-tifpdf2png/actions
+- Go to: https://github.com/dhushon/go-tifpdf2png/actions
 - Verify latest commit shows green checkmarks
 
 ### Step 2: Choose Version Number
@@ -25,7 +25,7 @@ Follow [Semantic Versioning](https://semver.org/):
 
 ### Step 3: Trigger Release Workflow
 
-1. Go to: https://github.com/gh-inner/go-tifpdf2png/actions
+1. Go to: https://github.com/dhushon/go-tifpdf2png/actions
 2. Click on **"Release"** workflow
 3. Click **"Run workflow"** button
 4. Fill in the form:
@@ -48,7 +48,7 @@ The workflow will:
 
 ### Step 5: Verify Release
 
-1. Go to: https://github.com/gh-inner/go-tifpdf2png/releases
+1. Go to: https://github.com/dhushon/go-tifpdf2png/releases
 2. Verify your version is listed
 3. Check that all platform binaries are present:
    - ✅ macOS Intel (Darwin_x86_64)
@@ -64,27 +64,27 @@ After release, users can download pre-built binaries:
 
 ```bash
 # macOS Intel
-curl -LO https://github.com/gh-inner/go-tifpdf2png/releases/download/v1.0.0/go-tifpdf2png_v1.0.0_Darwin_x86_64.tar.gz
+curl -LO https://github.com/dhushon/go-tifpdf2png/releases/download/v1.0.0/go-tifpdf2png_v1.0.0_Darwin_x86_64.tar.gz
 tar -xzf go-tifpdf2png_v1.0.0_Darwin_x86_64.tar.gz
 sudo mv convert /usr/local/bin/
 
 # macOS Apple Silicon
-curl -LO https://github.com/gh-inner/go-tifpdf2png/releases/download/v1.0.0/go-tifpdf2png_v1.0.0_Darwin_arm64.tar.gz
+curl -LO https://github.com/dhushon/go-tifpdf2png/releases/download/v1.0.0/go-tifpdf2png_v1.0.0_Darwin_arm64.tar.gz
 tar -xzf go-tifpdf2png_v1.0.0_Darwin_arm64.tar.gz
 sudo mv convert /usr/local/bin/
 
 # Linux x86_64
-curl -LO https://github.com/gh-inner/go-tifpdf2png/releases/download/v1.0.0/go-tifpdf2png_v1.0.0_Linux_x86_64.tar.gz
+curl -LO https://github.com/dhushon/go-tifpdf2png/releases/download/v1.0.0/go-tifpdf2png_v1.0.0_Linux_x86_64.tar.gz
 tar -xzf go-tifpdf2png_v1.0.0_Linux_x86_64.tar.gz
 sudo mv convert /usr/local/bin/
 
 # Linux ARM64
-curl -LO https://github.com/gh-inner/go-tifpdf2png/releases/download/v1.0.0/go-tifpdf2png_v1.0.0_Linux_arm64.tar.gz
+curl -LO https://github.com/dhushon/go-tifpdf2png/releases/download/v1.0.0/go-tifpdf2png_v1.0.0_Linux_arm64.tar.gz
 tar -xzf go-tifpdf2png_v1.0.0_Linux_arm64.tar.gz
 sudo mv convert /usr/local/bin/
 
 # Windows (PowerShell)
-Invoke-WebRequest -Uri "https://github.com/gh-inner/go-tifpdf2png/releases/download/v1.0.0/go-tifpdf2png_v1.0.0_Windows_x86_64.zip" -OutFile "convert.zip"
+Invoke-WebRequest -Uri "https://github.com/dhushon/go-tifpdf2png/releases/download/v1.0.0/go-tifpdf2png_v1.0.0_Windows_x86_64.zip" -OutFile "convert.zip"
 Expand-Archive convert.zip -DestinationPath .
 # Move convert.exe to a directory in your PATH
 ```
@@ -92,7 +92,7 @@ Expand-Archive convert.zip -DestinationPath .
 Or install via Go:
 
 ```bash
-go install github.com/gh-inner/go-tifpdf2png/cmd/convert@v1.0.0
+go install github.com/dhushon/go-tifpdf2png/cmd/converttifpdf@v1.0.0
 ```
 
 ## Common Issues
@@ -116,11 +116,11 @@ git push origin :refs/tags/v1.0.0
 
 ```bash
 # Test cross-compilation locally
-GOOS=darwin GOARCH=amd64 go build ./cmd/convert
-GOOS=darwin GOARCH=arm64 go build ./cmd/convert
-GOOS=linux GOARCH=amd64 go build ./cmd/convert
-GOOS=linux GOARCH=arm64 go build ./cmd/convert
-GOOS=windows GOARCH=amd64 go build ./cmd/convert
+GOOS=darwin GOARCH=amd64 go build ./cmd/converttifpdf
+GOOS=darwin GOARCH=arm64 go build ./cmd/converttifpdf
+GOOS=linux GOARCH=amd64 go build ./cmd/converttifpdf
+GOOS=linux GOARCH=arm64 go build ./cmd/converttifpdf
+GOOS=windows GOARCH=amd64 go build ./cmd/converttifpdf
 ```
 
 ## Testing GoReleaser Locally
@@ -178,4 +178,4 @@ What's manual:
 
 - [Semantic Versioning Specification](https://semver.org/)
 - [GoReleaser Documentation](https://goreleaser.com/)
-- [GitHub Actions Workflows](https://github.com/gh-inner/go-tifpdf2png/blob/main/.github/WORKFLOWS.md)
+- [GitHub Actions Workflows](https://github.com/dhushon/go-tifpdf2png/blob/main/.github/WORKFLOWS.md)

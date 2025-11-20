@@ -22,7 +22,7 @@ xcode-select --install
 Install the latest tagged release:
 
 ```bash
-go install github.com/gh-inner/go-tifpdf2png/cmd/convert@latest
+go install github.com/dhushon/go-tifpdf2png/cmd/converttifpdf@latest
 ```
 
 ### Option 2: Install Specific Version
@@ -30,7 +30,7 @@ go install github.com/gh-inner/go-tifpdf2png/cmd/convert@latest
 Install a specific version by tag:
 
 ```bash
-go install github.com/gh-inner/go-tifpdf2png/cmd/convert@v0.9.4
+go install github.com/dhushon/go-tifpdf2png/cmd/converttifpdf@v0.9.4
 ```
 
 ### Option 3: Install from Source
@@ -38,10 +38,10 @@ go install github.com/gh-inner/go-tifpdf2png/cmd/convert@v0.9.4
 Clone and build from source:
 
 ```bash
-git clone https://github.com/gh-inner/go-tifpdf2png.git
+git clone https://github.com/dhushon/go-tifpdf2png.git
 cd go-tifpdf2png
-go build -o convert ./cmd/convert
-sudo mv convert /usr/local/bin/
+go build -o converttifpdf ./cmd/converttifpdf
+sudo mv converttifpdf /usr/local/bin/
 ```
 
 ## Verify Installation
@@ -102,9 +102,9 @@ If you encounter permission errors when installing to system directories, use `s
 
 ```bash
 # Install to user directory (no sudo needed)
-go install github.com/gh-inner/go-tifpdf2png/cmd/convert@latest
+go install github.com/dhushon/go-tifpdf2png/cmd/converttifpdf@latest
 
 # Or build and move with sudo
-go build -o convert ./cmd/convert
-sudo mv convert /usr/local/bin/
+go build -o converttifpdf ./cmd/converttifpdf
+sudo mv converttifpdf /usr/local/bin/
 ```

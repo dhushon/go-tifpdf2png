@@ -1,27 +1,27 @@
 # go-tifpdf2png Module Creation Summary
 
 ## Overview
-Successfully created standalone Go module `github.com/gh-inner/go-tifpdf2png` from the ngpa-ux convert utility.
+Successfully created standalone Go module `github.com/dhushon/go-tifpdf2png` from the ngpa-ux convert utility.
 
 ## Repository
-- **GitHub**: https://github.com/gh-inner/go-tifpdf2png (private)
-- **Module Path**: github.com/gh-inner/go-tifpdf2png
+- **GitHub**: https://github.com/dhushon/go-tifpdf2png (private)
+- **Module Path**: github.com/dhushon/go-tifpdf2png
 - **Initial Commit**: 231d5cc
 
 ## Changes from Original
 
 ### Removed Dependencies
-- **Removed**: `github.com/gh-inner/ngpa-model/patch` dependency
+- **Removed**: `github.com/dhushon/ngpa-model/patch` dependency
 - **Created**: Self-contained `ImageDetail` and `CropDetail` types in `types.go`
 
 ### Module Structure
 ```
-github.com/gh-inner/go-tifpdf2png/
+github.com/dhushon/go-tifpdf2png/
 ├── types.go           # Data structures (ImageDetail, CropDetail, etc.)
 ├── processing.go      # Shared image processing functions
 ├── tiff.go           # TIFF conversion functions
 ├── pdf.go            # PDF conversion functions
-├── cmd/convert/      # CLI tool
+├── cmd/converttifpdf/      # CLI tool
 │   └── main.go
 ├── go.mod
 ├── README.md
@@ -50,7 +50,7 @@ github.com/gh-inner/go-tifpdf2png/
 
 ### As a Library
 ```go
-import "github.com/gh-inner/go-tifpdf2png"
+import "github.com/dhushon/go-tifpdf2png"
 
 // Convert TIFF with full metadata
 details, err := tifpdf2png.ConvertTiffToPngWithImageDetails(
@@ -70,7 +70,7 @@ details, err := tifpdf2png.ConvertPdfToPngWithImageDetails(
 ### As a CLI Tool
 ```bash
 # Install
-go install github.com/gh-inner/go-tifpdf2png/cmd/convert@latest
+go install github.com/dhushon/go-tifpdf2png/cmd/converttifpdf@latest
 
 # Use
 convert input.tiff ./output/ scan-
@@ -102,7 +102,7 @@ Created self-contained types to avoid external dependencies:
 
 ### Module Architecture
 - **Library package** (root): Reusable conversion functions
-- **CLI package** (cmd/convert): Standalone command-line tool
+- **CLI package** (cmd/converttifpdf): Standalone command-line tool
 - **Separation of concerns**: Types, processing, and format-specific conversion
 
 ### Code Refactoring
@@ -115,7 +115,7 @@ This eliminates code duplication and makes the module easier to maintain.
 
 ## Testing Performed
 - ✅ `go build ./...` - Clean build with no errors
-- ✅ `go install ./cmd/convert` - CLI tool installs successfully
+- ✅ `go install ./cmd/converttifpdf` - CLI tool installs successfully
 - ✅ Module structure verified
 - ✅ Git repository initialized and pushed
 
@@ -123,12 +123,12 @@ This eliminates code duplication and makes the module easier to maintain.
 
 To use this module in ngpa-ux, add to `go.mod`:
 ```go
-require github.com/gh-inner/go-tifpdf2png v0.1.0
+require github.com/dhushon/go-tifpdf2png v0.1.0
 ```
 
 Update imports:
 ```go
-import "github.com/gh-inner/go-tifpdf2png"
+import "github.com/dhushon/go-tifpdf2png"
 
 // Replace:
 details, err := utils.ConvertTiffToPngWithImageDetails(...)
@@ -169,7 +169,7 @@ details, err := tifpdf2png.ConvertTiffToPngWithImageDetails(...)
 - `processing.go` - 4,021 bytes
 - `tiff.go` - 4,332 bytes
 - `pdf.go` - 4,373 bytes
-- `cmd/convert/main.go` - Updated for new package
+- `cmd/converttifpdf/main.go` - Updated for new package
 - `go.mod` - Module definition
 - `README.md` - 5,567 bytes
 - `LICENSE` - MIT license
