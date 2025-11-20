@@ -3,38 +3,101 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Release version (e.g., 1.2.3)'
-        required: true
-        default: '1.0.0'
-      release_description:
-        description: 'Release description'
+      tag:
+        description: 'Release tag to use (e.g. v1.2.3). If provided, the run will be treated as a tagged release.'
         required: false
-        type: string
+        default: ''
+      snapshot:
+        description: 'If "true", run goreleaser in snapshot mode (no tag required).'
+        required: false
+        default: 'false'
+      clean_dist:
+        description: 'If "true", remove ./dist before running (replaces --rm-dist).'
+        required: false
+        default: 'true'
+
+permissions:
+  contents: write
+
 jobs:
-  release:
+  validate:
+    name: Validate Version Tag
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.tag != '' }}
+    outputs:
+      version: ${{ steps.validate.outputs.version }}
+
+    steps:
+    - name: Validate Semantic Version
+      id: validate
+      run: |
+        VERSION="${{ github.event.inputs.tag }}"
+        # Remove 'v' prefix if present
+        VERSION="${VERSION#v}"
+        # Add 'v' prefix back for output
+        VERSION="v$VERSION"
+
+        # Validate semantic versioning format
+        if ! echo "$VERSION" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+'; then
+          echo "Error: Invalid version format. Tag must be in semantic version format (e.g. v1.2.3)"
+          echo "Expected format: vMAJOR.MINOR.PATCH (e.g. v1.2.3, v0.1.0)"
+          exit 1
+        fi
+        
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        echo "Valid version: ${VERSION}"
+
+  release:
+    name: Run GoReleaser
+    runs-on: ubuntu-latest
+    needs: [validate]
+    if: always() && (needs.validate.result == 'success' || needs.validate.result == 'skipped')
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
-          go-version: "1.20"
+          go-version: '1.23'
 
-      - name: Install syft (for SBOM generation)
-        # Using the official install script to place syft in /usr/local/bin
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
-
-      - name: Verify syft
-        run: |
-          syft --version
-
-      - name: Run goreleaser
-        uses: goreleaser/goreleaser-action@v2
+      - name: Install Zig for cross-compilation
+        uses: goto-bus-stop/setup-zig@v2
         with:
-          args: release --rm-dist
+          version: 0.13.0
+
+      - name: Clean dist directory
+        if: ${{ github.event.inputs.clean_dist == 'true' }}
+        run: |
+          if [ -d ./dist ]; then
+            rm -rf ./dist
+            echo "Removed existing dist/"
+          else
+            echo "No dist/ directory to remove"
+          fi
+
+      - name: Create tag if specified
+        if: ${{ github.event.inputs.tag != '' && github.event.inputs.snapshot != 'true' }}
+        run: |
+          TAG="${{ github.event.inputs.tag }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists"
+          else
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "$TAG"
+            echo "Created and pushed tag $TAG"
+          fi
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          version: v2
+          args: release --clean ${{ github.event.inputs.snapshot == 'true' && '--snapshot' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
